@@ -3,178 +3,267 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+from typing import List, Dict
+from pathlib import Path
+
+# Setup paths
+SCRIPT_DIR = Path(__file__).parent
+ROOT_DIR = SCRIPT_DIR.parent
+VISUALIZATIONS_DIR = SCRIPT_DIR / 'visualizations'
+DATA_FILE = ROOT_DIR / '3_LLMs_Responses_Metrics_Calculation' / 'processed_results.csv'
 
 # Load data and setup
-df = pd.read_csv('../3_LLMs_Responses_Metrics_Calculation/processed_results.csv')
-os.makedirs('visualizations', exist_ok=True)
+df = pd.read_csv(DATA_FILE)
+os.makedirs(VISUALIZATIONS_DIR, exist_ok=True)
 
-def create_visualizations():
-    # Set style
+def setup_style():
+    """Set up the plotting style for all visualizations"""
     plt.style.use('seaborn-v0_8')
     sns.set_palette("husl")
+    plt.rcParams['figure.dpi'] = 300
+    plt.rcParams['savefig.dpi'] = 300
+    plt.rcParams['font.size'] = 10
+    plt.rcParams['axes.titlesize'] = 14
+    plt.rcParams['axes.labelsize'] = 12
+
+def save_plot(fig, filename: str):
+    """Save the plot with consistent settings"""
+    plt.savefig(VISUALIZATIONS_DIR / f'{filename}.png', bbox_inches='tight', dpi=300)
+    plt.close()
+
+def create_category_performance():
+    """Create heatmaps for both English and Arabic performance by category"""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
     
-    # 1. Radar Chart
-    metrics = ['EN_Response Accuracy Rate', 'EN_Cultural_Sensitivity', 'EN_Language_Quality', 'EN_Contextual_Relevance']
-    model_perf = df.groupby('Model')[metrics].mean()
-    categories = ['Accuracy', 'Cultural Sensitivity', 'Language Quality', 'Relevance']
-    angles = np.linspace(0, 2*np.pi, len(categories), endpoint=False).tolist()
-    angles += angles[:1]
+    # English heatmap
+    en_heatmap = df.pivot_table(index='Model', columns='Category', values='EN_Response Accuracy Rate')
+    sns.heatmap(en_heatmap, annot=True, cmap='YlGnBu', fmt='.1f', linewidths=.5, 
+                cbar_kws={'label': 'Accuracy Rate (%)'}, ax=ax1)
+    ax1.set_title('English Performance by Category')
     
-    fig, ax = plt.subplots(figsize=(12, 12), subplot_kw=dict(polar=True))
-    for i, (model, row) in enumerate(model_perf.iterrows()):
-        values = row.values.tolist() + [row.values[0]]
-        ax.plot(angles, values, 'o-', linewidth=2, label=model, color=plt.cm.tab10(i))
-        ax.fill(angles, values, alpha=0.1, color=plt.cm.tab10(i))
-    plt.xticks(angles[:-1], categories, size=12)
-    plt.legend(loc='center left', bbox_to_anchor=(1.2, 0.5))
-    plt.title('Model Performance Comparison', size=15, pad=20)
-    ax.set_ylim(0, 100)
-    ax.set_yticks([0, 20, 40, 60, 80, 100])
-    ax.set_yticklabels(['0%', '20%', '40%', '60%', '80%', '100%'])
-    ax.grid(True, alpha=0.3)
-    ax.set_rgrids([20, 40, 60, 80, 100], angle=0)
-    plt.savefig('visualizations/model_radar_chart.png', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    # 2. Language Disparity
-    disparity = df.groupby('Model').apply(lambda x: abs(x['EN_Response Accuracy Rate'].mean() - x['AR_Response Accuracy Rate'].mean()))
-    disparity = disparity.sort_values(ascending=True)  # Sort in ascending order
-    plt.figure(figsize=(12, 6))
-    sns.barplot(x=disparity.index, y=disparity.values, palette='viridis')  # Restore viridis palette
-    plt.title('Language Performance Disparity by Model\n(Lower is better - shows absolute difference between EN and AR accuracy)', fontsize=14)
-    plt.ylabel('Accuracy Difference (%)')
-    plt.xlabel('Model')
-    plt.xticks(rotation=45)
-    plt.grid(axis='y', linestyle='--', alpha=0.3)
-    for i, v in enumerate(disparity.values):
-        plt.text(i, v + 0.5, f'{v:.1f}%', ha='center', fontsize=10)
+    # Arabic heatmap
+    ar_heatmap = df.pivot_table(index='Model', columns='Category', values='AR_Response Accuracy Rate')
+    sns.heatmap(ar_heatmap, annot=True, cmap='YlGnBu', fmt='.1f', linewidths=.5, 
+                cbar_kws={'label': 'Accuracy Rate (%)'}, ax=ax2)
+    ax2.set_title('Arabic Performance by Category')
+    
     plt.tight_layout()
-    plt.savefig('visualizations/language_disparity.png', dpi=300, bbox_inches='tight')
-    plt.close()
+    save_plot(fig, 'category_performance')
 
-    # 3. Category Heatmap
-    heatmap_data = df.pivot_table(index='Model', columns='Category', values='EN_Response Accuracy Rate')
-    plt.figure(figsize=(14, 8))
-    sns.heatmap(heatmap_data, annot=True, cmap='YlGnBu', fmt='.1f', linewidths=.5, cbar_kws={'label': 'Accuracy Rate (%)'})
-    plt.title('Model Performance by Category', fontsize=15)
-    plt.tight_layout()
-    plt.savefig('visualizations/category_heatmap.png', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    # 4. Language Comparison
+def create_language_comparison():
+    """Create comprehensive language comparison visualizations"""
+    # Direct comparison bar chart
     lang_comp = df.groupby('Model')[['EN_Response Accuracy Rate', 'AR_Response Accuracy Rate']].mean()
-    plt.figure(figsize=(14, 7))
+    plt.figure(figsize=(12, 6))
     x = np.arange(len(lang_comp))
     width = 0.35
     plt.bar(x - width/2, lang_comp['EN_Response Accuracy Rate'], width, label='English', color='royalblue')
-    plt.bar(x + width/2, lang_comp['AR_Response Accuracy Rate'], width, label='Arabic/Darija', color='tomato')
+    plt.bar(x + width/2, lang_comp['AR_Response Accuracy Rate'], width, label='Arabic', color='tomato')
     plt.xlabel('Model')
     plt.ylabel('Accuracy Rate (%)')
-    plt.title('English vs Arabic/Darija Performance by Model', fontsize=15)
+    plt.title('English vs Arabic Performance Comparison')
     plt.xticks(x, lang_comp.index, rotation=45)
     plt.legend()
     plt.grid(axis='y', linestyle='--', alpha=0.3)
     plt.tight_layout()
-    plt.savefig('visualizations/language_comparison.png', dpi=300, bbox_inches='tight')
-    plt.close()
+    save_plot(plt.gcf(), 'language_comparison')
 
-    # 5. Sensitivity vs Accuracy
-    model_metrics = df.groupby('Model').agg({
-        'EN_Response Accuracy Rate': 'mean',
-        'EN_Cultural_Sensitivity': 'mean',
-        'EN_Contextual_Relevance': 'mean'
-    })
-    plt.figure(figsize=(10, 8))
-    plt.scatter(model_metrics['EN_Cultural_Sensitivity'], model_metrics['EN_Response Accuracy Rate'],
-               s=model_metrics['EN_Contextual_Relevance'] * 5, alpha=0.7, c=range(len(model_metrics)), cmap='viridis')
-    for model in model_metrics.index:
-        plt.annotate(model, (model_metrics.loc[model, 'EN_Cultural_Sensitivity'],
-                           model_metrics.loc[model, 'EN_Response Accuracy Rate']),
-                    xytext=(7, -5), textcoords='offset points')
-    plt.xlabel('Cultural Sensitivity Score')
-    plt.ylabel('Accuracy Rate (%)')
-    plt.title('Cultural Sensitivity vs Accuracy by Model\n(Bubble size = Contextual Relevance)', fontsize=14)
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig('visualizations/sensitivity_accuracy.png', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    # 6. Correlation Matrix
-    metric_cols = [col for col in df.columns if any(x in col for x in ['Accuracy', 'Sensitivity', 'Quality', 'Relevance', 'Coverage', 'Agreement'])]
-    plt.figure(figsize=(12, 10))
-    mask = np.triu(np.ones_like(df[metric_cols].corr(), dtype=bool))
-    sns.heatmap(df[metric_cols].corr(), mask=mask, cmap='coolwarm', center=0,
-                annot=True, fmt='.2f', square=True, linewidths=.5)
-    plt.title('Correlation Matrix of Evaluation Metrics', fontsize=16)
-    plt.tight_layout()
-    plt.savefig('visualizations/correlation_matrix.png', dpi=300, bbox_inches='tight')
-    plt.close()
-
-    # 7. Category Difficulty
-    cat_diff = df.groupby('Category')['EN_Response Accuracy Rate'].agg(['mean', 'std']).reset_index()
-    cat_diff = cat_diff.sort_values('mean', ascending=True)  # Sort in ascending order
+def create_performance_distribution():
+    """Create distribution plots for both languages"""
     plt.figure(figsize=(12, 6))
-    plt.errorbar(x=cat_diff['Category'], y=cat_diff['mean'],
-                yerr=cat_diff['std'], fmt='o', capsize=5, ecolor='red', capthick=2,
-                color='royalblue', markersize=8)  # Add color and marker size
-    plt.title('Category Difficulty Ranking with Uncertainty', fontsize=15)
-    plt.ylabel('Average Accuracy Rate (%)')
-    plt.xlabel('Category')
+    data_to_plot = df[['EN_Response Accuracy Rate', 'AR_Response Accuracy Rate']].melt()
+    sns.boxplot(x='variable', y='value', data=data_to_plot)
+    plt.title('Distribution of Performance Scores')
+    plt.xlabel('Language')
+    plt.ylabel('Accuracy Rate (%)')
+    plt.xticks([0, 1], ['English', 'Arabic'])
+    plt.grid(axis='y', linestyle='--', alpha=0.3)
+    plt.tight_layout()
+    save_plot(plt.gcf(), 'performance_distribution')
+
+def create_model_consistency():
+    """Create consistency analysis for both languages"""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 6))
+    
+    # English consistency
+    en_var = df.groupby('Model')['EN_Response Accuracy Rate'].agg(['mean', 'std']).reset_index()
+    en_var['coefficient_of_variation'] = (en_var['std'] / en_var['mean']) * 100
+    en_var = en_var.sort_values('coefficient_of_variation')
+    
+    sns.barplot(x='Model', y='coefficient_of_variation', data=en_var, palette='viridis', ax=ax1)
+    ax1.set_title('English Model Consistency\n(Lower values indicate more consistent performance)')
+    ax1.set_ylabel('Coefficient of Variation (%)')
+    ax1.tick_params(axis='x', rotation=45)
+    ax1.grid(axis='y', linestyle='--', alpha=0.3)
+    
+    # Arabic consistency
+    ar_var = df.groupby('Model')['AR_Response Accuracy Rate'].agg(['mean', 'std']).reset_index()
+    ar_var['coefficient_of_variation'] = (ar_var['std'] / ar_var['mean']) * 100
+    ar_var = ar_var.sort_values('coefficient_of_variation')
+    
+    sns.barplot(x='Model', y='coefficient_of_variation', data=ar_var, palette='viridis', ax=ax2)
+    ax2.set_title('Arabic Model Consistency\n(Lower values indicate more consistent performance)')
+    ax2.set_ylabel('Coefficient of Variation (%)')
+    ax2.tick_params(axis='x', rotation=45)
+    ax2.grid(axis='y', linestyle='--', alpha=0.3)
+    
+    plt.tight_layout()
+    save_plot(fig, 'model_consistency')
+
+def create_correlation_analysis():
+    """Create correlation analysis for both languages"""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 8))
+    
+    # English correlations
+    en_metrics = [col for col in df.columns if col.startswith('EN_') and any(x in col for x in 
+                ['Accuracy', 'Sensitivity', 'Quality', 'Relevance'])]
+    mask_en = np.triu(np.ones_like(df[en_metrics].corr(), dtype=bool))
+    sns.heatmap(df[en_metrics].corr(), mask=mask_en, cmap='coolwarm', center=0,
+                annot=True, fmt='.2f', square=True, linewidths=.5, ax=ax1)
+    ax1.set_title('English Metrics Correlation')
+    
+    # Arabic correlations
+    ar_metrics = [col for col in df.columns if col.startswith('AR_') and any(x in col for x in 
+                ['Accuracy', 'Sensitivity', 'Quality', 'Relevance'])]
+    mask_ar = np.triu(np.ones_like(df[ar_metrics].corr(), dtype=bool))
+    sns.heatmap(df[ar_metrics].corr(), mask=mask_ar, cmap='coolwarm', center=0,
+                annot=True, fmt='.2f', square=True, linewidths=.5, ax=ax2)
+    ax2.set_title('Arabic Metrics Correlation')
+    
+    plt.tight_layout()
+    save_plot(fig, 'correlation_analysis')
+
+def create_cultural_sensitivity_analysis():
+    """Create analysis of cultural sensitivity scores"""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 6))
+    
+    # English cultural sensitivity
+    en_sens = df.groupby('Model')['EN_Cultural_Sensitivity'].mean().sort_values(ascending=False)
+    sns.barplot(x=en_sens.index, y=en_sens.values, palette='viridis', ax=ax1)
+    ax1.set_title('English Cultural Sensitivity Scores')
+    ax1.set_ylabel('Cultural Sensitivity Score')
+    ax1.tick_params(axis='x', rotation=45)
+    ax1.grid(axis='y', linestyle='--', alpha=0.3)
+    
+    # Arabic cultural sensitivity
+    ar_sens = df.groupby('Model')['AR_Cultural_Sensitivity'].mean().sort_values(ascending=False)
+    sns.barplot(x=ar_sens.index, y=ar_sens.values, palette='viridis', ax=ax2)
+    ax2.set_title('Arabic Cultural Sensitivity Scores')
+    ax2.set_ylabel('Cultural Sensitivity Score')
+    ax2.tick_params(axis='x', rotation=45)
+    ax2.grid(axis='y', linestyle='--', alpha=0.3)
+    
+    plt.tight_layout()
+    save_plot(fig, 'cultural_sensitivity_analysis')
+
+def create_language_quality_analysis():
+    """Create analysis of language quality scores"""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 6))
+    
+    # English language quality
+    en_qual = df.groupby('Model')['EN_Language_Quality'].mean().sort_values(ascending=False)
+    sns.barplot(x=en_qual.index, y=en_qual.values, palette='viridis', ax=ax1)
+    ax1.set_title('English Language Quality Scores')
+    ax1.set_ylabel('Language Quality Score')
+    ax1.tick_params(axis='x', rotation=45)
+    ax1.grid(axis='y', linestyle='--', alpha=0.3)
+    
+    # Arabic language quality
+    ar_qual = df.groupby('Model')['AR_Language_Quality'].mean().sort_values(ascending=False)
+    sns.barplot(x=ar_qual.index, y=ar_qual.values, palette='viridis', ax=ax2)
+    ax2.set_title('Arabic Language Quality Scores')
+    ax2.set_ylabel('Language Quality Score')
+    ax2.tick_params(axis='x', rotation=45)
+    ax2.grid(axis='y', linestyle='--', alpha=0.3)
+    
+    plt.tight_layout()
+    save_plot(fig, 'language_quality_analysis')
+
+def create_language_disparity_analysis():
+    """Create analysis of language disparity between English and Arabic responses"""
+    plt.figure(figsize=(12, 6))
+    disparity = df.groupby('Model')['Language Disparity'].mean().sort_values(ascending=False)
+    sns.barplot(x=disparity.index, y=disparity.values, palette='viridis')
+    plt.title('Language Disparity Between English and Arabic Responses')
+    plt.ylabel('Disparity Score')
+    plt.xlabel('Model')
     plt.xticks(rotation=45)
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.grid(axis='y', linestyle='--', alpha=0.3)
     plt.tight_layout()
-    plt.savefig('visualizations/category_difficulty.png', dpi=300, bbox_inches='tight')
-    plt.close()
+    save_plot(plt.gcf(), 'language_disparity_analysis')
 
-    # 8. Model Performance by Category
-    fig, axes = plt.subplots(4, 2, figsize=(18, 20))
-    for i, (category, ax) in enumerate(zip(df['Category'].unique(), axes.flatten())):
-        cat_data = df[df['Category'] == category]
-        model_perf = cat_data.groupby('Model')['EN_Response Accuracy Rate'].mean().sort_values()
-        sns.barplot(x=model_perf.index, y=model_perf.values, palette='viridis', ax=ax)  # Restore viridis palette
-        ax.set_title(f'Model Performance on {category} Questions', fontsize=12)
-        ax.set_ylabel('Accuracy Rate (%)')
-        ax.tick_params(axis='x', rotation=45)
-        ax.grid(axis='y', linestyle='--', alpha=0.3)
+def create_category_breakdown():
+    """Create detailed breakdown of performance by category and model"""
+    categories = df['Category'].unique()
+    n_categories = len(categories)
+    
+    # Calculate grid dimensions
+    n_cols = min(2, n_categories)
+    n_rows = (n_categories + 1) // 2
+    
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(20, 5*n_rows))
+    if n_categories == 1:
+        axes = np.array([axes])
+    axes = axes.ravel()
+    
+    for idx, category in enumerate(categories):
+        category_data = df[df['Category'] == category]
+        en_means = category_data.groupby('Model')['EN_Response Accuracy Rate'].mean()
+        ar_means = category_data.groupby('Model')['AR_Response Accuracy Rate'].mean()
+        
+        x = np.arange(len(en_means))
+        width = 0.35
+        
+        axes[idx].bar(x - width/2, en_means, width, label='English', color='royalblue')
+        axes[idx].bar(x + width/2, ar_means, width, label='Arabic', color='tomato')
+        
+        axes[idx].set_title(f'Performance in {category.title()} Category')
+        axes[idx].set_ylabel('Accuracy Rate (%)')
+        axes[idx].set_xticks(x)
+        axes[idx].set_xticklabels(en_means.index, rotation=45)
+        axes[idx].legend()
+        axes[idx].grid(axis='y', linestyle='--', alpha=0.3)
+    
+    # Hide empty subplots if any
+    for idx in range(n_categories, len(axes)):
+        axes[idx].set_visible(False)
+    
     plt.tight_layout()
-    plt.savefig('visualizations/model_by_category.png', dpi=300, bbox_inches='tight')
-    plt.close()
+    save_plot(fig, 'category_breakdown')
 
-    # 9. Cross-Model Agreement
-    try:
-        agreement = df.groupby('Category')['EN_Cross-Model Agreement'].mean().sort_values()
-        plt.figure(figsize=(12, 6))
-        sns.barplot(x=agreement.index, y=agreement.values, palette='Blues_d')  # Restore Blues_d palette
-        plt.title('Cross-Model Agreement by Category', fontsize=15)
-        plt.ylabel('Average Agreement Score (%)')
-        plt.xticks(rotation=45)
-        plt.grid(axis='y', linestyle='--', alpha=0.3)
-        plt.tight_layout()
-        plt.savefig('visualizations/cross_model_agreement.png', dpi=300, bbox_inches='tight')
-        plt.close()
-    except Exception as e:
-        print(f"Error creating cross-model agreement visualization: {e}")
+def main():
+    """Main function to create all visualizations"""
+    print("Setting up visualization style...")
+    setup_style()
+    
+    print("Creating category performance heatmaps...")
+    create_category_performance()
+    
+    print("Creating language comparison...")
+    create_language_comparison()
+    
+    print("Creating performance distribution...")
+    create_performance_distribution()
+    
+    print("Creating model consistency analysis...")
+    create_model_consistency()
+    
+    print("Creating correlation analysis...")
+    create_correlation_analysis()
+    
+    print("Creating cultural sensitivity analysis...")
+    create_cultural_sensitivity_analysis()
+    
+    print("Creating language quality analysis...")
+    create_language_quality_analysis()
+    
+    print("Creating language disparity analysis...")
+    create_language_disparity_analysis()
+    
+    print("Creating category breakdown...")
+    create_category_breakdown()
+    
+    print("All visualizations complete! Images saved in the '4_LLMs_Responses_Analysis/visualizations' folder.")
 
-    # 10. Model Consistency
-    try:
-        model_var = df.groupby('Model')['EN_Response Accuracy Rate'].agg(['mean', 'std']).reset_index()
-        model_var['coefficient_of_variation'] = (model_var['std'] / model_var['mean']) * 100
-        model_var = model_var.sort_values('coefficient_of_variation')
-        
-        plt.figure(figsize=(12, 6))
-        sns.barplot(x='Model', y='coefficient_of_variation', data=model_var, palette='viridis')  # Restore viridis palette
-        
-        plt.title('Model Consistency Analysis\n(Lower values indicate more consistent performance)', 
-                 fontsize=14)
-        plt.ylabel('Coefficient of Variation (%)')
-        plt.xticks(rotation=45)
-        plt.grid(axis='y', linestyle='--', alpha=0.3)
-        plt.tight_layout()
-        plt.savefig('visualizations/model_consistency.png', dpi=300, bbox_inches='tight')
-        plt.close()
-    except Exception as e:
-        print(f"Error creating model consistency visualization: {e}")
-
-print("Creating visualizations...")
-create_visualizations()
-print("All visualizations complete! Images saved in the 'visualizations' folder.")
+if __name__ == "__main__":
+    main()
