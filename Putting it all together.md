@@ -72,7 +72,12 @@ Sarah, a university student in Rabat, often uses AI to help with research papers
 * Cultural accuracy affects educational quality
 * Language barriers shouldn't limit access to knowledge
 
-![student.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\student.png)
+graph LR
+    A[Question Input] --> B[AI Response]
+    B --> C1[Fact Checking Required]
+    B --> C2[Time Wasted]
+    C2 --> D[Verification]
+    D --> E[Correction]
 
 #### 2. The Social Researcher's Challenge
 
@@ -149,10 +154,13 @@ The testing methodology draws inspiration from consensus-based approaches to inf
 
 ## Technical Implementation Overview
 
-![Technical-Implementation-Overview.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Technical-Implementation-Overview.png)
-
-
-
+graph LR
+    A[questions.json] --> B[query_llms.py]
+    B --> C[Model Processing]
+    B --> D[Error Handling]
+    B --> E[Timeout Control]
+    B --> F[Response Logging]
+    C --> G[Results Analysis]
 
 The system architecture is designed to handle the diverse requirements of multilingual testing while maintaining consistent evaluation criteria across all models. The focus on both English and Darija queries allows us to specifically assess how well these models handle Moroccan dialectal variations compared to standardized English queries on the same topics.
 
@@ -189,7 +197,14 @@ The data management part organizes the test samples and makes sure they properly
 
 #### 2. Model Interaction Requirements
 
-![Model-Interaction-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Model-Interaction-Requirements.png)
+graph TD
+    A[Data Input] --> B[Model Warmup]
+    A --> C[Retry Logic]
+    B --> D[Query Processing]
+    B --> E[Timeout Control]
+    D --> F[Response Capture]
+    D --> G[Response Validation]
+    G --> H[Error Handling]
 
 | ID | Requirement | Priority | Details |
 |----|-------------|----------|---------|
@@ -265,7 +280,13 @@ Reliability features are really important, given that model APIs can be inconsis
 
 #### 3. Security Requirements
 
-![Security-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Security-Requirements.png)
+flowchart TD
+    A["Data Protection"] --> B1["Input Sanitization"] & B2["Model Access"] & B3["Access Control"]
+    B3 --> C1["Output Validation"]
+    C1 --> D1["Result Integrity"]
+    B1 --> E["Validation Layer"]
+    B2 --> E
+    D1 --> E
 
 Security considerations include:
 * Safeguarding the intellectual property of question
@@ -312,7 +333,15 @@ Quality assurance measures ensure the reliability of the research findings by va
 
 #### 6. System Architecture Requirements
 
-![System-Architecture-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\System-Architecture-Requirements.png)
+graph TD
+    A[questions.json] --> B[query_llms.py]
+    A --> C[Validation]
+    B --> D1[Model Layer]
+    B --> D2[Process Control]
+    C --> D3[Error Handling]
+    D1 --> E1[Results]
+    D2 --> E2[Performance]
+    E1 --> F[Data Export]
 
 The system architecture separates concerns to enable:
 * Independent testing of each component
@@ -370,7 +399,14 @@ The Ollama framework gives us a consistent way to work with all the models in ou
 
 ### Data Management Implementation
 
-![Data-Management-Implementation.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Data-Management-Implementation.png)
+graph LR
+    A[JSON Input] --> B[Python Processing]
+    B --> C[Error Handling]
+    B --> D[Model Queries]
+    B --> E[Validation]
+    D --> F[CSV Output]
+    D --> G[Response Cache]
+    F --> H[Analysis]
 
 The implementation uses:
 
@@ -454,7 +490,12 @@ Every model has its own unique integration hurdles, especially when it comes to 
 
 The system employs ThreadPoolExecutor for efficient query handling.
 
-![Parallel-Processing-Implementation.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Parallel-Processing-Implementation.png)
+graph LR
+    A[Main Thread] --> B[Queue Management]
+    B --> C[Worker Pool\n3 threads]
+    C --> D[Query Execution]
+    D --> E[Response Collection]
+    E --> F[Result Aggregation]
 
 This architecture enables:
 * Concurrent processing of multiple models
@@ -618,7 +659,20 @@ Lower values indicate more consistent performance across languages.
 
 ### Visualization and Analysis Approach
 
-![Visualization-and-Analysis-Approach.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Visualization-and-Analysis-Approach.png)
+graph TD
+    A[llm_responses.csv] --> B[Data Preprocessing]
+    B --> C1[Factual Verification]
+    B --> C2[Language Quality Assessment]
+    B --> C3[Cultural Context Analysis]
+    C1 --> D[Per-Model Performance]
+    C2 --> D
+    C3 --> D
+    D --> E1[Cross-Model Comparison]
+    D --> E2[Language Disparity Analysis]
+    D --> E3[Category Performance Analysis]
+    E1 --> F[Overall Rankings]
+    E2 --> F
+    E3 --> F
 
 For meaningful visualization of comparative performance, I will implement:
 1. Radar Charts, to display multi-dimensional performance across different categories
@@ -692,7 +746,13 @@ Drawing from the Consensus method in the Jakub Stadnik, Maria Ganzha, and Marcin
 3. Calculate precision and recall for each model relative to the consensus
 4. Identify questions where there is significant disagreement and analyze why
 
-![Consensus-Based Analysis.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Consensus-Based Analysis.png)
+graph TD
+    A[All Model Responses] --> B[Extract Key Claims]
+    B --> C[Identify Shared Claims]
+    C --> D[Calculate Agreement Percentages]
+    D --> E[Establish Consensus View]
+    E --> F[Compare Individual Models to Consensus]
+    F --> G[Rank Models by Consensus Alignment]
 
 #### Phase 6: Comparative Response Analysis
 
@@ -714,7 +774,20 @@ Based on preliminary analysis, I expect to find:
 
 ### 1. Model Performance by Category
 
-![Model-Performance-by-Category.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Model-Performance-by-Category.png)
+graph TD
+    A[Category Analysis] --> B1[Cultural Topics]
+    A --> B2[Political Topics]
+    A --> B3[Historical Topics]
+    A --> B4[Linguistic Topics]
+    B1 --> C1[Aya: Strong]
+    B1 --> C2[Falcon3: Moderate]
+    B1 --> C3[Others: Weaker]
+    B2 --> D1[All Models: Mixed]
+    B3 --> E1[deepseek-r1: Strong on Facts]
+    B3 --> E2[Aya: Strong on Context]
+    B4 --> F1[Aya: Best in Darija]
+    B4 --> F2[Falcon3: Good Arabic]
+    B4 --> F3[Others: English-Centric]
 
 ### 2. Language Performance Gap
 
