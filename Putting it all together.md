@@ -72,7 +72,7 @@ Sarah, a university student in Rabat, often uses AI to help with research papers
 * Cultural accuracy affects educational quality
 * Language barriers shouldn't limit access to knowledge
 
-![student.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\student.png)
+![student.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\student.png)
 
 #### 2. The Social Researcher's Challenge
 
@@ -149,7 +149,10 @@ The testing methodology draws inspiration from consensus-based approaches to inf
 
 ## Technical Implementation Overview
 
-![Technical-Implementation-Overview.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\Technical-Implementation-Overview.png)
+![Technical-Implementation-Overview.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Technical-Implementation-Overview.png)
+
+
+
 
 The system architecture is designed to handle the diverse requirements of multilingual testing while maintaining consistent evaluation criteria across all models. The focus on both English and Darija queries allows us to specifically assess how well these models handle Moroccan dialectal variations compared to standardized English queries on the same topics.
 
@@ -186,7 +189,7 @@ The data management part organizes the test samples and makes sure they properly
 
 #### 2. Model Interaction Requirements
 
-![Model-Interaction-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\Model-Interaction-Requirements.png)
+![Model-Interaction-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Model-Interaction-Requirements.png)
 
 | ID | Requirement | Priority | Details |
 |----|-------------|----------|---------|
@@ -262,7 +265,7 @@ Reliability features are really important, given that model APIs can be inconsis
 
 #### 3. Security Requirements
 
-![Security-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\Security-Requirements.png)
+![Security-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Security-Requirements.png)
 
 Security considerations include:
 * Safeguarding the intellectual property of question
@@ -309,7 +312,7 @@ Quality assurance measures ensure the reliability of the research findings by va
 
 #### 6. System Architecture Requirements
 
-![System-Architecture-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\System-Architecture-Requirements.png)
+![System-Architecture-Requirements.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\System-Architecture-Requirements.png)
 
 The system architecture separates concerns to enable:
 * Independent testing of each component
@@ -367,7 +370,7 @@ The Ollama framework gives us a consistent way to work with all the models in ou
 
 ### Data Management Implementation
 
-![Data-Management-Implementation.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\Data-Management-Implementation.png)
+![Data-Management-Implementation.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Data-Management-Implementation.png)
 
 The implementation uses:
 
@@ -451,7 +454,7 @@ Every model has its own unique integration hurdles, especially when it comes to 
 
 The system employs ThreadPoolExecutor for efficient query handling.
 
-![Parallel-Processing-Implementation.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\Parallel-Processing-Implementation.png)
+![Parallel-Processing-Implementation.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Parallel-Processing-Implementation.png)
 
 This architecture enables:
 * Concurrent processing of multiple models
@@ -615,7 +618,7 @@ Lower values indicate more consistent performance across languages.
 
 ### Visualization and Analysis Approach
 
-![Visualization-and-Analysis-Approach.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\Visualization-and-Analysis-Approach.png)
+![Visualization-and-Analysis-Approach.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Visualization-and-Analysis-Approach.png)
 
 For meaningful visualization of comparative performance, I will implement:
 1. Radar Charts, to display multi-dimensional performance across different categories
@@ -689,7 +692,7 @@ Drawing from the Consensus method in the Jakub Stadnik, Maria Ganzha, and Marcin
 3. Calculate precision and recall for each model relative to the consensus
 4. Identify questions where there is significant disagreement and analyze why
 
-![Consensus-Based Analysis.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\Consensus-Based Analysis.png)
+![Consensus-Based Analysis.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Consensus-Based Analysis.png)
 
 #### Phase 6: Comparative Response Analysis
 
@@ -711,7 +714,7 @@ Based on preliminary analysis, I expect to find:
 
 ### 1. Model Performance by Category
 
-![Model-Performance-by-Category.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\0_Documents\Graphs\Model-Performance-by-Category.png)
+![Model-Performance-by-Category.png](C:\Users\otmnm\Downloads\Uni\Subjects\Diploma seminar and diploma project - projekt\Thesis\Thesis_Project\Engineering_Thesis_Project-main\Graphs\Model-Performance-by-Category.png)
 
 ### 2. Language Performance Gap
 
