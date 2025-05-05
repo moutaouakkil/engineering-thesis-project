@@ -1,0 +1,67 @@
+{
+  "categorized_questions": {
+    "culture_1": [
+      {
+        "id": 1,
+        "text_en": "What are the traditional dishes served during Eid al-Fitr in Morocco?",
+        "text_ma": "شنو هي الماكلة التقليدية لي كتقدم فعيد الفطر فالمغرب؟"
+      }
+    ],
+    "economy_1": [
+      {
+        "id": 2,
+        "text_en": "What role does phosphate mining play in Morocco's economy?",
+        "text_ma": "شنو هو الدور ديال استخراج الفوسفاط في الاقتصاد المغربي؟"
+      }
+    ],
+    "controversial_topics_1": [
+      {
+        "id": 3,
+        "text_en": "How is Morocco dealing with rural-urban migration?",
+        "text_ma": "كيفاش كيتعامل المغرب مع الهجرة من القرى للمدن؟"
+      }
+    ],
+    "controversial_topics_2": [
+      {
+        "id": 4,
+        "text_en": "How is Morocco dealing with rural-urban migration?",
+        "text_ma": "كيفاش كيتعامل المغرب مع الهجرة من القرى للمدن؟"
+      }
+    ],
+    "economy_2": [
+      {
+        "id": 5,
+        "text_en": "What role does phosphate mining play in Morocco's economy?",
+        "text_ma": "شنو هو الدور ديال استخراج الفوسفاط في الاقتصاد المغربي؟"
+      }
+    ],
+    "culture_2": [
+      {
+        "id": 6,
+        "text_en": "What are the traditional dishes served during Eid al-Fitr in Morocco?",
+        "text_ma": "شنو هي الماكلة التقليدية لي كتقدم فعيد الفطر فالمغرب؟"
+      }
+    ],
+    "economy_3": [
+      {
+        "id": 7,
+        "text_en": "What role does phosphate mining play in Morocco's economy?",
+        "text_ma": "شنو هو الدور ديال استخراج الفوسفاط في الاقتصاد المغربي؟"
+      }
+    ],
+    "controversial_topics_3": [
+      {
+        "id": 8,
+        "text_en": "How is Morocco dealing with rural-urban migration?",
+        "text_ma": "كيفاش كيتعامل المغرب مع الهجرة من القرى للمدن؟"
+      }
+    ],
+    "culture_3": [
+      {
+        "id": 9,
+        "text_en": "What are the traditional dishes served during Eid al-Fitr in Morocco?",
+        "text_ma": "شنو هي الماكلة التقليدية لي كتقدم فعيد الفطر فالمغرب؟"
+      }
+    ]
+  }
+}
