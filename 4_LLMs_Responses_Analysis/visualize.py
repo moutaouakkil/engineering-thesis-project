@@ -16,6 +16,19 @@ DATA_FILE = ROOT_DIR / '3_LLMs_Responses_Metrics_Calculation' / 'processed_resul
 df = pd.read_csv(DATA_FILE)
 os.makedirs(VISUALIZATIONS_DIR, exist_ok=True)
 
+# Create consistent color mapping for models
+MODEL_COLORS = {
+    'aya': '#1f77b4',  # blue
+    'gemma': '#ff7f0e',  # orange
+    'llama3.2': '#2ca02c',  # green
+    'mistral': '#d62728',  # red
+    'mixtral': '#9467bd',  # purple
+    'phi': '#8c564b',  # brown
+    'qwen': '#e377c2',  # pink
+    'deepseek-r1': '#7f7f7f',  # gray
+    'falcon3': '#bcbd22'  # olive
+}
+
 def setup_style():
     """Set up the plotting style for all visualizations"""
     plt.style.use('seaborn-v0_8')
@@ -90,7 +103,8 @@ def create_model_consistency():
     en_var['coefficient_of_variation'] = (en_var['std'] / en_var['mean']) * 100
     en_var = en_var.sort_values('coefficient_of_variation')
     
-    sns.barplot(x='Model', y='coefficient_of_variation', data=en_var, palette='viridis', ax=ax1)
+    sns.barplot(x='Model', y='coefficient_of_variation', data=en_var, 
+                palette=MODEL_COLORS, ax=ax1)
     ax1.set_title('English Model Consistency\n(Lower values indicate more consistent performance)')
     ax1.set_ylabel('Coefficient of Variation (%)')
     ax1.tick_params(axis='x', rotation=45)
@@ -101,7 +115,8 @@ def create_model_consistency():
     ar_var['coefficient_of_variation'] = (ar_var['std'] / ar_var['mean']) * 100
     ar_var = ar_var.sort_values('coefficient_of_variation')
     
-    sns.barplot(x='Model', y='coefficient_of_variation', data=ar_var, palette='viridis', ax=ax2)
+    sns.barplot(x='Model', y='coefficient_of_variation', data=ar_var, 
+                palette=MODEL_COLORS, ax=ax2)
     ax2.set_title('Arabic Model Consistency\n(Lower values indicate more consistent performance)')
     ax2.set_ylabel('Coefficient of Variation (%)')
     ax2.tick_params(axis='x', rotation=45)
@@ -139,7 +154,7 @@ def create_cultural_sensitivity_analysis():
     
     # English cultural sensitivity
     en_sens = df.groupby('Model')['EN_Cultural_Sensitivity'].mean().sort_values(ascending=False)
-    sns.barplot(x=en_sens.index, y=en_sens.values, palette='viridis', ax=ax1)
+    sns.barplot(x=en_sens.index, y=en_sens.values, palette=MODEL_COLORS, ax=ax1)
     ax1.set_title('English Cultural Sensitivity Scores')
     ax1.set_ylabel('Cultural Sensitivity Score')
     ax1.tick_params(axis='x', rotation=45)
@@ -147,7 +162,7 @@ def create_cultural_sensitivity_analysis():
     
     # Arabic cultural sensitivity
     ar_sens = df.groupby('Model')['AR_Cultural_Sensitivity'].mean().sort_values(ascending=False)
-    sns.barplot(x=ar_sens.index, y=ar_sens.values, palette='viridis', ax=ax2)
+    sns.barplot(x=ar_sens.index, y=ar_sens.values, palette=MODEL_COLORS, ax=ax2)
     ax2.set_title('Arabic Cultural Sensitivity Scores')
     ax2.set_ylabel('Cultural Sensitivity Score')
     ax2.tick_params(axis='x', rotation=45)
@@ -162,7 +177,7 @@ def create_language_quality_analysis():
     
     # English language quality
     en_qual = df.groupby('Model')['EN_Language_Quality'].mean().sort_values(ascending=False)
-    sns.barplot(x=en_qual.index, y=en_qual.values, palette='viridis', ax=ax1)
+    sns.barplot(x=en_qual.index, y=en_qual.values, palette=MODEL_COLORS, ax=ax1)
     ax1.set_title('English Language Quality Scores')
     ax1.set_ylabel('Language Quality Score')
     ax1.tick_params(axis='x', rotation=45)
@@ -170,7 +185,7 @@ def create_language_quality_analysis():
     
     # Arabic language quality
     ar_qual = df.groupby('Model')['AR_Language_Quality'].mean().sort_values(ascending=False)
-    sns.barplot(x=ar_qual.index, y=ar_qual.values, palette='viridis', ax=ax2)
+    sns.barplot(x=ar_qual.index, y=ar_qual.values, palette=MODEL_COLORS, ax=ax2)
     ax2.set_title('Arabic Language Quality Scores')
     ax2.set_ylabel('Language Quality Score')
     ax2.tick_params(axis='x', rotation=45)
